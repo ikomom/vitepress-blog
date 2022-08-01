@@ -4,4 +4,4 @@ editLink: true
 
 ---
 
-'# Hello VitePress' 
+welcome to my blog
