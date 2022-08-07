@@ -50,7 +50,7 @@
 
 
 
-## 三.  monaco 自定义插件与渲染
+## 三.  TODO: monaco 自定义插件与渲染 
 
  参考资料
 
@@ -82,4 +82,14 @@ monaco是从vscode中直接剥离出来的编辑器，以便可供web使用。
 现在需要为其添加vue和windicss的支持，这需要非常了解vscode、vue、windicss的运行机制
 
 - [vs插件官方文档](https://code.visualstudio.com/api/get-started/your-first-extension)
-- 
+
+
+
+## 四.  加载npm包
+
+从[skypack](https://www.skypack.dev/) 获取esm 包
+
+原理
+
+- https://zhuanlan.zhihu.com/p/535994431
+- https://docs.skypack.dev/

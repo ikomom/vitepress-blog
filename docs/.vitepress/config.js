@@ -20,6 +20,13 @@ export default defineConfig({
           {text: '在线代码编辑器', link: '/requirement/onlineCodeEditor'},
         ]
       },
+      {
+        text: '读书笔记',
+        collapsible: true,
+        items: [
+          {text: '《无器械健身》', link: '/sport/intro'},
+        ]
+      },
     ],
     nav: [
       // {
