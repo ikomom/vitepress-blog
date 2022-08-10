@@ -27,6 +27,13 @@ export default defineConfig({
           {text: '前端部署', link: '/linux/frontend'},
         ]
       },
+      {
+        text: '读书笔记',
+        collapsible: true,
+        items: [
+          {text: '《无器械健身》', link: '/sport/intro'},
+        ]
+      },
     ],
     nav: [
       // {
