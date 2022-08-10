@@ -20,6 +20,13 @@ export default defineConfig({
           {text: '在线代码编辑器', link: '/requirement/onlineCodeEditor'},
         ]
       },
+      {
+        text: 'linux',
+        collapsible: true,
+        items: [
+          {text: '前端部署', link: '/linux/frontend'},
+        ]
+      },
     ],
     nav: [
       // {
