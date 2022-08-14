@@ -93,3 +93,5 @@ monaco是从vscode中直接剥离出来的编辑器，以便可供web使用。
 
 - https://zhuanlan.zhihu.com/p/535994431
 - https://docs.skypack.dev/
+
+通过 [es-module-shims](https://www.npmjs.com/package/es-module-shims) 加载

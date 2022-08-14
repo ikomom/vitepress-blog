@@ -31,7 +31,8 @@ export default defineConfig({
         text: '读书笔记',
         collapsible: true,
         items: [
-          {text: '《无器械健身》', link: '/sport/intro'},
+          {text: '《无器械健身》', link: '/sport/noMachineSport'},
+          {text: '《城市就是健身房》', link: '/sport/cityIsGym'},
         ]
       },
     ],
