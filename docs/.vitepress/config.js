@@ -21,6 +21,13 @@ export default defineConfig({
         ]
       },
       {
+        text: 'linux',
+        collapsible: true,
+        items: [
+          {text: '前端部署', link: '/linux/frontend'},
+        ]
+      },
+      {
         text: '读书笔记',
         collapsible: true,
         items: [
