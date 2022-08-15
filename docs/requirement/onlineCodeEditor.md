@@ -87,6 +87,10 @@ monaco是从vscode中直接剥离出来的编辑器，以便可供web使用。
 
 ## 四.  加载npm包
 
+> import map仅仅只能用于学习，生产环境还是得用stackbilz、codesandbox的方法
+
+
+
 从[skypack](https://www.skypack.dev/) 获取esm 包
 
 原理
@@ -94,8 +98,142 @@ monaco是从vscode中直接剥离出来的编辑器，以便可供web使用。
 - https://zhuanlan.zhihu.com/p/535994431
 - https://docs.skypack.dev/
 
-通过 [es-module-shims](https://www.npmjs.com/package/es-module-shims) 加载
 
-https://segmentfault.com/a/1190000040059032
 
-https://github.com/WICG/import-maps
+es-modules
+
+- [import.meta](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/import.meta)
+
+
+
+通过 [import-maps](https://github.com/WICG/import-maps) 特性加载es-moudle模块，在未支持这一特性的浏览器上，可使用 [es-module-shims](https://www.npmjs.com/package/es-module-shims) 做兼容性处理
+
+- [「将 Vue SFC 编译为 ESM 」探索之路](https://segmentfault.com/a/1190000040059032)
+- [vue 无build加载](https://cn.vuejs.org/guide/quick-start.html#without-build-tools)
+- [import maps](https://www.cordc.net/link/hb0eOAVCkjWZabkD?sub=1)
+- [(重要) es-module-shims原理及综合描述](https://juejin.cn/post/7070339012933713956)
+  - [inline-module](https://www.npmjs.com/package/inline-module)
+  - 只是需要注意的是，`<script src="https://unpkg.com/inline-module/index.js" setup></script>`这段必须出现在所有的`type="inline-module"`的script标签之后，所有`type="module"`的script标签之前。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script async src="https://unpkg.com/es-module-shims@1.5.15/dist/es-module-shims.js"></script>
+</head>
+<body>
+<div id="app">
+  template: {{ message }}
+</div>
+</body>
+
+<script>
+  console.log('currentScript', document.currentScript)
+</script>
+<script type="inline-module" id="foo">
+  const foo = 'i am foo';
+  export default {foo};
+
+
+
+</script>
+<!-- https://generator.jspm.io/#U2NhYGBkDM0rySzJSU1hKEpNTC5xMLTQM9Az0C1K1jMAAKFS5w0gAA -->
+<script type="inline-module-importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+
+</script>
+<script setup>
+  const currentScript = document.currentScript || document.querySelector('script')
+  const map = {
+    imports: {
+      vue: 'https://unpkg.com/vue@3/dist/vue.esm-browser.js',
+    },
+    scopes: {},
+  }
+
+  function getBlobURL(module) {
+    const jsCode = module.innerHTML
+    const blob = new Blob([jsCode], {type: 'text/javascript'})
+    return URL.createObjectURL(blob)
+  }
+
+  function setup() {
+    const modules = document.querySelectorAll('script[type="inline-module"]')
+
+    const importMap = {};
+    [...modules].forEach((module) => {
+      const {id} = module
+      if (id)
+        importMap[`#${id}`] = getBlobURL(module)
+    })
+    console.log('modules', {modules, importMap})
+    const importMapEl = document.querySelector('script[type="importmap"]')
+    if (importMapEl) {
+      // map = JSON.parse(mapEl.innerHTML);
+      throw new Error('Cannot setup after importmap is set. Use <script type="inline-module-importmap"> instead.')
+    }
+
+    const externalMapEl = document.querySelector('script[type="inline-module-importmap"]')
+    if (externalMapEl) {
+      const externalMap = JSON.parse(externalMapEl.textContent)
+      Object.assign(map.imports, externalMap.imports)
+      Object.assign(map.scopes, externalMap.scopes)
+    }
+
+    Object.assign(map.imports, importMap)
+
+    const mapEl = document.createElement('script')
+    mapEl.setAttribute('type', 'importmap')
+    mapEl.textContent = JSON.stringify(map)
+    currentScript.after(mapEl)
+  }
+
+  if (currentScript.hasAttribute('setup'))
+    setup()
+
+</script>
+
+<script type="module">
+  import {createApp} from 'vue'
+  import * as vue from 'vue'
+  import foo from '#foo';
+
+  console.log('vue', vue)
+  console.log(import.meta, document.currentScript)
+  console.log('foo', foo)
+
+  createApp({
+    data() {
+      return {
+        message: foo,
+      }
+    },
+  }).mount('#app')
+
+</script>
+
+</html>
+
+```
+
+
+
+
+
+[system.js](https://github.com/systemjs/systemjs) 在import-maps特性上，支持umd模块和更多的功能
+
+- [SystemJS 探秘](https://zhuanlan.zhihu.com/p/402155045)
+
+
+
+stackblitz
+
+- https://zhuanlan.zhihu.com/p/35778751
