@@ -224,16 +224,28 @@ es-modules
 
 ```
 
-
-
-
-
 [system.js](https://github.com/systemjs/systemjs) 在import-maps特性上，支持umd模块和更多的功能
 
 - [SystemJS 探秘](https://zhuanlan.zhihu.com/p/402155045)
 
-
-
 stackblitz
 
 - https://zhuanlan.zhihu.com/p/35778751
+
+## 五.  TODO 编译vue文件
+
+### 1. 编译过程
+
+正常情况下，使用importmap特性，已经可以在浏览器上直接运行es-module模块。但是，vue3的单文件，是无法在浏览器上直接使用的，所以，我们需要把其转换为js代码。
+
+这时候需要使用[vue/compiler-sfc](https://www.npmjs.com/package/@vue/compiler-sfc) 转换单文件代码成原生js、css、html
+
+简单流程 (TODO)
+
+### 2. 多文件TODO
+
+还没开始写,  但是有几个猜想
+
+- [inline-module](https://www.npmjs.com/package/inline-module): 每个文件都创建成blob, 挂在import-map上，自然就可以通过浏览器互相import。这样每个文件的名字、导入方式需要一致
+- vue-playground：原来的使用方法，有点像webpack,  挂载一个全局变量module,  嵌入iframe前提前做好挂载，从一个入口往下递归解析,  只解析相对地址 。  最后通过postMessage发送到iframe,  动态替换，每次不重新创建iframe,  只有在importmap或vue版本变化时才重新创建
+
