@@ -248,4 +248,6 @@ stackblitz
 
 - [inline-module](https://www.npmjs.com/package/inline-module): 每个文件都创建成blob, 挂在import-map上，自然就可以通过浏览器互相import。这样每个文件的名字、导入方式需要一致
 - vue-playground：原来的使用方法，有点像webpack,  挂载一个全局变量module,  嵌入iframe前提前做好挂载，从一个入口往下递归解析,  只解析相对地址 。  最后通过postMessage发送到iframe,  动态替换，每次不重新创建iframe,  只有在importmap或vue版本变化时才重新创建
+  - [【Webpack】AST、babel、依赖](https://www.jianshu.com/p/c874dc43dc66)
+
 
