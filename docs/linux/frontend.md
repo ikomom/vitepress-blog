@@ -1,5 +1,13 @@
 # 前端部署
 
+
+
+## 环境变量
+
+https://www.cnblogs.com/yaoqingzhuan/p/10889718.html
+
+
+
 # 必要库安装
 
 1. [nvm](https://github.com/nvm-sh/nvm)： 当前0.39.1版本，版本升级以下版本号需要更换;
