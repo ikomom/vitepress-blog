@@ -32,6 +32,7 @@ export default defineConfig({
         collapsible: true,
         items: [
           {text: '《无器械健身》', link: '/sport/noMachineSport'},
+          {text: '《囚徒健身》', link: '/sport/prisonerFitness'},
           {text: '《城市就是健身房》', link: '/sport/cityIsGym'},
         ]
       },

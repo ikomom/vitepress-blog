@@ -6,19 +6,15 @@
 
 以 https://play.vueuse.org/ 为例，实现一个以下功能vue代码编辑器
 
-- [ ] 在线编辑
-
-- [ ] 实时预览代码渲染
-
-- [ ] 多文件模拟
-
+- [x] 在线编辑,  实时预览代码渲染
+- [x] 多vue文件模拟
+- [ ] 添加unocss提示和处理
 - [ ] 导入npm包
-
 - [ ] 导出代码
-
 - [ ] 可分享页面
-
 - [x] 多窗格布局
+- [ ] 错误处理
+- [ ] 使用electron完善成类代码编辑器
 
 
 
@@ -232,7 +228,7 @@ stackblitz
 
 - https://zhuanlan.zhihu.com/p/35778751
 
-## 五.  TODO 编译vue文件
+## 五.  编译vue文件
 
 ### 1. 编译过程
 
@@ -240,14 +236,17 @@ stackblitz
 
 这时候需要使用[vue/compiler-sfc](https://www.npmjs.com/package/@vue/compiler-sfc) 转换单文件代码成原生js、css、html
 
-简单流程 (TODO)
+TODO: css 待处理
 
-### 2. 多文件TODO
+### 2. 多文件
 
-还没开始写,  但是有几个猜想
+以下为思路，选择了第二种方式
 
 - [inline-module](https://www.npmjs.com/package/inline-module): 每个文件都创建成blob, 挂在import-map上，自然就可以通过浏览器互相import。这样每个文件的名字、导入方式需要一致
-- vue-playground：原来的使用方法，有点像webpack,  挂载一个全局变量module,  嵌入iframe前提前做好挂载，从一个入口往下递归解析,  只解析相对地址 。  最后通过postMessage发送到iframe,  动态替换，每次不重新创建iframe,  只有在importmap或vue版本变化时才重新创建
+- vue-playground：原来的使用方法，有点像webpack,  挂载一个全局变量module,  嵌入iframe前提前做好挂载，从一个入口往下递归解析成ast,  替换导入导出地址，组装成script module。  最后通过postMessage发送到iframe,  动态替换，每次不重新创建iframe,  只有在importmap或vue版本变化时才重新创建
   - [【Webpack】AST、babel、依赖](https://www.jianshu.com/p/c874dc43dc66)
 
+## 六. 错误处理 TODO
+
+运行时错误和
 
