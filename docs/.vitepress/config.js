@@ -21,6 +21,13 @@ export default defineConfig({
         ]
       },
       {
+        text: 'nodejs',
+        collapsible: true,
+        items: [
+          {text: 'net', link: '/nodejs/net'},
+        ]
+      },
+      {
         text: 'linux',
         collapsible: true,
         items: [
