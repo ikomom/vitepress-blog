@@ -18,6 +18,7 @@ export default defineConfig({
         collapsible: true,
         items: [
           {text: '在线代码编辑器', link: '/requirement/onlineCodeEditor'},
+          {text: '个人demo网站', link: '/requirement/site'},
         ]
       },
       {
@@ -32,6 +33,7 @@ export default defineConfig({
         collapsible: true,
         items: [
           {text: '前端部署', link: '/linux/frontend'},
+          {text: '小知识', link: '/linux/tips'},
         ]
       },
       {
