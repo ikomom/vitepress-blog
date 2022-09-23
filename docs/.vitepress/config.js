@@ -10,6 +10,7 @@ export default defineConfig({
         text: '算法与数据结构',
         collapsible: true,
         items: [
+          {text: '收集', link: '/algorithm/index'},
           {text: '树', link: '/algorithm/tree'},
         ]
       },
