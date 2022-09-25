@@ -1,7 +1,5 @@
 ## 算法
 
-## 收集
-
 ###  1. 欧几里得算法求最大公约数
 
 又称[辗转相除法](https://zh.wikipedia.org/wiki/%E8%BC%BE%E8%BD%89%E7%9B%B8%E9%99%A4%E6%B3%95)， 用于计算两个**非负整数**a，b的[最大公约数](https://zh.wikipedia.org/wiki/%E6%9C%80%E5%A4%A7%E5%85%AC%E5%9B%A0%E6%95%B8) 
@@ -38,14 +36,30 @@ https://knightyun.github.io/2019/09/03/js-lcm
 ### 3. 并查集
 
 - 连接 union
+
 - 查询是否连接 findUnion
+
   - reflexive(反射性)：p 被连接到p。自己连自己
   - symmetric(对称性)：如果p连接到q， q也连接到p
   - transitive(传递性)：如果p连接到q,  q连接到r, 则p连接到r
 
-![联通分量](/union-component.png)
+  
+
+![联通分量](/union/union-component.png)
 
 connect-component(联通分量):  互相连接的最大对象集合
+
+
+
+Quick-find [eager approach]
+
+![Quick-find [eager approach]](/union/quick-find.png)
+
+上图，数组中，数字一样的代表一个联通分量
+
+
+
+#### 1. 自我实现
 
 自己实现的一个简单的过程,  目测是O(n)
 
@@ -129,4 +143,4 @@ const command = {
 
 ```
 
-TODO: 看看 union-find库
+TODO: 看看 union-find库	
