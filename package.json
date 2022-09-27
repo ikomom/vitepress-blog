@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "vitepress": "1.0.0-alpha.15",
+    "vitepress": "1.0.0-alpha.16",
     "vue": "^3.2.37"
   }
 }

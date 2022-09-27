@@ -1,11 +1,11 @@
 lockfileVersion: 5.4
 
 specifiers:
-  vitepress: 1.0.0-alpha.15
+  vitepress: 1.0.0-alpha.16
   vue: ^3.2.37
 
 devDependencies:
-  vitepress: 1.0.0-alpha.15_tbpndr44ulefs3hehwpi2mkf2y
+  vitepress: 1.0.0-alpha.16_tbpndr44ulefs3hehwpi2mkf2y
   vue: 3.2.37
 
 packages:
@@ -262,7 +262,7 @@ packages:
       '@vue/shared': 3.2.39
       estree-walker: 2.0.2
       magic-string: 0.25.9
-      postcss: 8.4.14
+      postcss: 8.4.16
       source-map: 0.6.1
     dev: true
 
@@ -790,8 +790,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitepress/1.0.0-alpha.15_tbpndr44ulefs3hehwpi2mkf2y:
-    resolution: {integrity: sha512-+pHJQCpnv0wVgLRyonisrj7Y77PVhbns2nTLxV9GkH3T+RTY/W2JmRatzBg5WciMaPyO8Ms6F3YElO5PULVv3w==}
+  /vitepress/1.0.0-alpha.16_tbpndr44ulefs3hehwpi2mkf2y:
+    resolution: {integrity: sha512-IXW3jA2Y9BsoYlpVuVcAy2XEu1wuoq2xmPvSDPVFrh8HV+oVpuvbPUCHqG6smEcu86xw3g4JjreqAwPlpPn6gw==}
     hasBin: true
     dependencies:
       '@docsearch/css': 3.2.1
