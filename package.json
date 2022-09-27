@@ -5,6 +5,7 @@
   "main": "index.js",
   "packageManager": "pnpm@7.5.0",
   "scripts": {
+    "gen:sidebar": "node script/sidebar.js",
     "dev": "pnpm run docs:dev",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
@@ -14,6 +15,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "glob": "^8.0.3",
+    "prettier": "^2.7.1",
     "vitepress": "1.0.0-alpha.16",
     "vue": "^3.2.37"
   }
