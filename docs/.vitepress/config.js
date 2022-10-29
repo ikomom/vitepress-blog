@@ -20,6 +20,7 @@ export default defineConfig({
         items: [
           {text: '在线代码编辑器', link: '/requirement/onlineCodeEditor'},
           {text: '个人demo网站', link: '/requirement/site'},
+          {text: 'demo', link: '/requirement/demo'},
         ]
       },
       {
@@ -41,8 +42,8 @@ export default defineConfig({
         text: '读书笔记',
         collapsible: true,
         items: [
+          {text: '健身日记', link: '/sport/prisonerFitness'},
           {text: '《无器械健身》', link: '/sport/noMachineSport'},
-          {text: '《囚徒健身》', link: '/sport/prisonerFitness'},
           {text: '《城市就是健身房》', link: '/sport/cityIsGym'},
         ]
       },
