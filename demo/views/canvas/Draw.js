@@ -26,11 +26,9 @@ export class Draw {
     el.onmousemove = (e) => {
       if (isDrag) {
         const {left, top} = el.getBoundingClientRect()
-        // const x = e.pageX - left
-        // const y = e.pageY - el.offsetTop - 100
         const x = e.clientX - left
         const y = e.clientY - top
-        // console.log('e',{x,y, e, oY: el.offsetTop})
+        console.log('e',{x,y, px: e.pageX, py: e.pageY, oY: el.offsetTop})
         c.lineTo(x, y)
         c.stroke()
         this.animateArr.push([x, y])
