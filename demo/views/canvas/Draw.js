@@ -14,10 +14,10 @@ export class Draw {
 
     let isDrag = false
 
-    c.lineWidth = 2
-    c.lineJoin = 'round'
-    c.shadowColor = '#000'
-    c.shadowBlur = 4
+    // c.lineWidth = 2
+    // c.lineJoin = 'round'
+    // c.shadowColor = '#000'
+    // c.shadowBlur = 4
 
     el.onmousedown = () => {
       isDrag = true
