@@ -31,6 +31,13 @@ export default defineConfig({
         ]
       },
       {
+        text: 'network',
+        collapsible: true,
+        items: [
+          {text: '浏览器', link: '/network/浏览器'},
+        ]
+      },
+      {
         text: 'linux',
         collapsible: true,
         items: [
@@ -64,8 +71,8 @@ export default defineConfig({
     //   copyright: 'Copyright © 2019-present Evan You'
     // },
     docFooter: {
-      prev: 'Pagina prior',
-      next: 'Proxima pagina'
+      prev: '上一页',
+      next: '下一页'
     }
   },
 
