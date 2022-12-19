@@ -11,29 +11,37 @@ export default defineConfig({
         collapsible: true,
         items: [
           {text: '收集', link: '/algorithm/index'},
-          {text: '树', link: '/algorithm/tree'},
+          {text: '[TODO]树', link: '/algorithm/tree'},
         ]
       },
       {
         text: '需求尝试',
         collapsible: true,
         items: [
-          {text: '在线代码编辑器', link: '/requirement/onlineCodeEditor'},
-          {text: '个人demo网站', link: '/requirement/site'},
+          {text: '[TODO]在线代码编辑器', link: '/requirement/onlineCodeEditor'},
+          {text: '[TODO]个人demo网站', link: '/requirement/site'},
         ]
       },
       {
         text: 'nodejs',
         collapsible: true,
         items: [
-          {text: 'net', link: '/nodejs/net'},
+          {text: '[TODO]net', link: '/nodejs/net'},
+        ]
+      },
+      {
+        text: '前端',
+        collapsible: true,
+        items: [
+          {text: '[TODO]react状态管理', link: '/front/state'},
+          {text: '[TODO]状态机', link: '/front/stateMachine'},
         ]
       },
       {
         text: 'linux',
         collapsible: true,
         items: [
-          {text: '前端部署', link: '/linux/frontend'},
+          {text: '[TODO]前端部署', link: '/linux/frontend'},
           {text: '小知识', link: '/linux/tips'},
         ]
       },
@@ -63,8 +71,8 @@ export default defineConfig({
     //   copyright: 'Copyright © 2019-present Evan You'
     // },
     docFooter: {
-      prev: 'Pagina prior',
-      next: 'Proxima pagina'
+      prev: '上一篇',
+      next: '下一篇'
     }
   },
 
