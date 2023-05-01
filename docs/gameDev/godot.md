@@ -1,5 +1,23 @@
 # godot
 
+
+
+## 学习收集
+
+### owner指向节点
+
+[godot中简单使用owner](https://www.bilibili.com/video/BV1ip4y1X7y9/?vd_source=5d93cf65b051f3058e10e71c0b4d4358)
+
+顶部节点owner为null
+
+多层嵌套子节点，owner指向当前场景的顶部节点
+
+### godot引擎 queue_free()和remove_child()的区别
+
+- [ ] https://www.bilibili.com/video/BV15v4y1f7mP/?spm_id_from=333.999.0.0&vd_source=5d93cf65b051f3058e10e71c0b4d4358
+
+
+
 ## AI问答
 
 开场白 `我是前端开发者，想要学习godot, ...`
@@ -7,6 +25,8 @@
 
 
 ### 当节点嵌套时的，节点生命周期调用顺序
+
+- [额外学习](https://kidscancode.org/godot_recipes/3.x/basics/tree_ready_order/index.html)
 
 > godot 节点嵌套时的生命周期调用顺序是这样的：
 >
@@ -78,3 +98,27 @@
 > (2) Accessing Child Nodes: Signals, or Functions? - Godot Engine - Q&A. https://godotengine.org/qa/101944/accessing-child-nodes-signals-or-functions.
 > (3) Signals vs. direct function calls : godot - Reddit. https://www.reddit.com/r/godot/comments/o9n75z/signals_vs_direct_function_calls/.
 > (4) Best practices with Godot signals · GDQuest. https://www.gdquest.com/tutorial/godot/best-practices/signals/.
+
+## 物理帧、进程帧区别
+
+> 您好，这是Bing。😊
+>
+> 根据搜索结果¹，`_process()`和`_physics_process()`的区别是：
+>
+> - `_process()`是与图形相关的，它每帧都会被调用，调用频率取决于CPU速度和VSync设置。您可以用它来处理任何与图形相关的事情，比如动画、UI、声音等。
+> - `_physics_process()`是与物理相关的，它每个物理帧都会被调用，调用频率取决于Physics FPS设置。Godot会在计算物理响应之前调用`_physics_process()`，因此要获取正确的物理响应，您应该用它来处理任何与物理相关的事情，比如移动、碰撞、射线等。
+>
+> 如果您想要在代码中获取当前的物理帧和进程帧，您可以使用`Engine.get_physics_frames()`和`Engine.get_frames()`函数。例如：
+>
+> ```
+> func _process(delta):
+>     print("Process frame: ", Engine.get_frames())
+> func _physics_process(delta):
+>     print("Physics frame: ", Engine.get_physics_frames())
+> ```
+>
+> 源: 与必应的对话， 2023/5/1
+> (1) Difference between _process() and _physics_process() - Godot Engine - Q&A. https://godotengine.org/qa/140210/difference-between-_process-and-_physics_process.
+> (2) godot - Difference between _process(delta) and _physics_process(delta .... https://gamedev.stackexchange.com/questions/192180/difference-between-processdelta-and-physics-processdelta.
+> (3) Godot: _process () vs _physics_process (): I need a valuable example. https://stackoverflow.com/questions/73098693/godot-process-vs-physics-process-i-need-a-valuable-example.
+> (4) Please what's the difference between the process and the physics .... https://www.reddit.com/r/godot/comments/hxfjk9/please_whats_the_difference_between_the_process/.
