@@ -12,9 +12,82 @@
 
 多层嵌套子节点，owner指向当前场景的顶部节点
 
-### godot引擎 queue_free()和remove_child()的区别
+### 用代码保存场景到磁盘
+
+必须给子节点指定owner
+
+```python
+func saveNode():
+	var n1 := Node.new()
+	var n2 := Node.new()
+	var n3 := Node.new()
+	n1.name = "亚托克斯"
+	n2.name = "剑魔"
+	n3.name = "走失了"
+	
+	n1.add_child(n2)
+	n2.add_child(n3)
+	# 指定owner
+	n2.owner = n1
+	n3.owner = n1
+	
+	var sence_pack := PackedScene.new()
+	var result := sence_pack.pack(n1)
+	
+	if result == OK:
+		var error = ResourceSaver.save(sence_pack, "res://test_node_pack.tscn") 
+		if error == OK:
+			print("保存成功")
+		else :
+			print("将场景保存到磁盘时出错。")		
+	else :
+		print("pack失败")
+
+```
+
+
+
+
+
+### 引擎free(), queue_free()和remove_child()的区别
 
 - [ ] https://www.bilibili.com/video/BV15v4y1f7mP/?spm_id_from=333.999.0.0&vd_source=5d93cf65b051f3058e10e71c0b4d4358
+
+
+
+### load与preload
+
+对比
+
+- preload是在编译时加载资源，也就是说在你的项目开始运行之前，资源就已经被加载好了。load是在运行时加载资源，也就是说在你的代码中调用load函数的时候，才会加载资源。
+- preload只能用于GDScript中的常量或全局变量，不能用于局部变量或函数参数。load可以用于任何地方，只要传入一个有效的资源路径。
+- 一般来说，preload适合用于加载一些小型或常用的资源，比如纹理、声音、字体等。load适合用于加载一些大型或不常用的资源，比如场景、模型、动画等。
+
+通常加载结果
+
+- 加载sence返回时PackedScence，通过instantiate方法初始化
+
+- 加载图片返回的是CompressdTexture2D
+
+
+
+### 获取节点get_node注意
+
+- https://www.bilibili.com/video/BV1684y147h4?p=20&vd_source=5d93cf65b051f3058e10e71c0b4d4358
+- [How to destory node](https://godotlearn.com/godot-3-1-how-to-destroy-object-node/)
+- [UNDERSTANDING NODE PATHS](https://kidscancode.org/godot_recipes/3.x/basics/getting_nodes/index.html)
+
+- [节点生命周期](https://kidscancode.org/godot_recipes/3.x/basics/tree_ready_order/index.html)
+
+  - 子场景也是按这个生命周期顺序
+  - 主场景包含多个子场景的，会先按这个顺序加载完所有子场景
+
+  
+
+- `_init`阶段无法获取到其他节点
+- 在`_ready`时删除`free`一个节点的引用，在其他节点还是能获取`get_node`到，因为它要在下一帧才释放；虽然可以获取引用，但是再把它添加`add_child`到场景树，也不会起效，因为引用已经被删除
+- `$Node` 等于 `get_node("node")`
+- 获取节点返回null，会记录一个红色警告，但是不会阻塞代码的运行
 
 
 
@@ -99,7 +172,7 @@
 > (3) Signals vs. direct function calls : godot - Reddit. https://www.reddit.com/r/godot/comments/o9n75z/signals_vs_direct_function_calls/.
 > (4) Best practices with Godot signals · GDQuest. https://www.gdquest.com/tutorial/godot/best-practices/signals/.
 
-## 物理帧、进程帧区别
+### 物理帧、进程帧区别
 
 > 您好，这是Bing。😊
 >
@@ -122,3 +195,16 @@
 > (2) godot - Difference between _process(delta) and _physics_process(delta .... https://gamedev.stackexchange.com/questions/192180/difference-between-processdelta-and-physics-processdelta.
 > (3) Godot: _process () vs _physics_process (): I need a valuable example. https://stackoverflow.com/questions/73098693/godot-process-vs-physics-process-i-need-a-valuable-example.
 > (4) Please what's the difference between the process and the physics .... https://www.reddit.com/r/godot/comments/hxfjk9/please_whats_the_difference_between_the_process/.
+
+### set_notify_transform什么作用；一般什么时候发出；全局变换什么意思
+
+> 根据Godot文档¹，set_notify_transform是一个方法，用于启用或禁用节点的变换通知。变换通知是当节点的变换发生变化时触发的回调，例如当节点被移动、旋转或缩放时。回调函数是_notification (NOTIFICATION_TRANSFORM_CHANGED)，它可以在脚本中重写，以便在节点的变换发生变化时执行自定义逻辑。
+>
+> 然而，似乎有一个bug²，导致一旦使用Tween来调整节点的变换，就无法接收到变换通知。这个bug还没有被修复，所以如果你依赖于变换通知来处理你的节点，你可能要避免使用Tween。
+>
+> 一般来说，当节点的局部变换或全局变换发生改变时，就会发出变换通知。局部变换是相对于父节点的变换，全局变换是相对于场景根节点的变换。你可以使用get_transform()和get_global_transform()方法来获取节点的局部和全局变换。全局变换是一个Transform对象，它包含了位置、旋转和缩放三个属性。
+>
+> 源: 与必应的对话， 2023/5/2
+> (1) Godot notifications — Godot Engine (stable) documentation in English. https://docs.godotengine.org/en/stable/tutorials/best_practices/godot_notifications.html.
+> (2) Transform notifications (NOTIFICATION_TRANSFORM_CHANGED) are no longer .... https://github.com/godotengine/godot/issues/34740.
+> (3) Transform — Godot Engine (3.0) documentation in English. https://docs.godotengine.org/en/3.0/classes/class_transform.html.
