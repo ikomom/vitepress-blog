@@ -47,6 +47,12 @@ func saveNode():
 
 
 
+### MainLoop和SceneTree
+
+https://www.bilibili.com/video/BV1684y147h4?p=21&vd_source=5d93cf65b051f3058e10e71c0b4d4358
+
+- 每帧（物理和空闲）的delta是距上次调用时间，单位是秒
+
 
 
 ### 引擎free(), queue_free()和remove_child()的区别
