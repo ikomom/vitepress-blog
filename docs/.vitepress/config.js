@@ -43,6 +43,7 @@ export default defineConfig({
         collapsible: true,
         items: [
           {text: '浏览器', link: '/network/浏览器'},
+          {text: 'Http缓存', link: '/network/Http缓存'},
         ]
       },
       {
