@@ -63,6 +63,15 @@ export default defineConfig({
           {text: '《城市就是健身房》', link: '/sport/cityIsGym'},
         ]
       },
+      {
+        text: '游戏开发',
+        collapsible: true,
+        items: [
+          {
+            text: 'godot', link: '/gameDev/godot'
+          }
+        ]
+      }
     ],
     nav: [
       // {
