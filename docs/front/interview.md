@@ -108,3 +108,19 @@
 ### 什么是粘包?
 
 https://blog.csdn.net/u014600626/article/details/108222945
+
+### nginx gzip 和 webpack gzip 有什么区别，需要同时打开吗
+
+> nginx gzip 和 webpack gzip 有以下区别：
+>
+> - nginx gzip 是在服务器端对静态资源进行实时压缩的功能，它可以通过配置 nginx.conf 文件中的 gzip 指令来开启或关闭¹。nginx gzip 可以减少网络传输的数据量，提高网页加载的速度，但是也会增加服务器的 CPU 资源消耗¹。
+> - webpack gzip 是在打包时对静态资源进行预压缩的功能，它可以通过使用 compression-webpack-plugin 插件来实现²。webpack gzip 可以生成对应的 .gz 文件，这些文件可以被 nginx 直接使用，而不需要再进行实时压缩³。webpack gzip 可以减少服务器的 CPU 资源消耗，但是也会增加打包的时间和磁盘空间²。
+>
+> 一般来说，建议同时开启 nginx gzip 和 webpack gzip ，这样可以让 nginx 优先使用 webpack 生成的 .gz 文件作为响应，从而减少服务器的 CPU 资源消耗，同时也保证了网页加载的速度⁴。
+>
+> 源: 与必应的对话， 2023/5/13
+> (1) webpack gzip和Nginx gzip区别 - 掘金. https://juejin.cn/post/7170689393311612958.
+> (2) nginx和webpack开启gzip压缩--前端开发 - 掘金. https://juejin.cn/post/6844904002979627016.
+> (3) webpack gzip 和 nginx gzip的区别_打包压缩和nginx访问压缩 .... https://blog.csdn.net/sd4015700/article/details/118650050.
+> (4) 配置nginx直接使用webpack生成的gz压缩文件，而不用nginx .... https://blog.csdn.net/ywl570717586/article/details/100011721.
+> (5) webpack性能优化：使用gzip压缩功能 - CSDN博客. https://blog.csdn.net/qq_38086247/article/details/118992974.
