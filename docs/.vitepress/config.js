@@ -64,6 +64,14 @@ export default defineConfig({
         ]
       },
       {
+        text: '杂项',
+        collapsible: true,
+        items: [
+          {text: '围棋', link: '/extra/围棋'},
+          // {text: '人际交往', link: '/extra/人际交往'},
+        ]
+      },
+      {
         text: '游戏开发',
         collapsible: true,
         items: [
