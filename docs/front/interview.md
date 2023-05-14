@@ -124,3 +124,21 @@ https://blog.csdn.net/u014600626/article/details/108222945
 > (3) webpack gzip 和 nginx gzip的区别_打包压缩和nginx访问压缩 .... https://blog.csdn.net/sd4015700/article/details/118650050.
 > (4) 配置nginx直接使用webpack生成的gz压缩文件，而不用nginx .... https://blog.csdn.net/ywl570717586/article/details/100011721.
 > (5) webpack性能优化：使用gzip压缩功能 - CSDN博客. https://blog.csdn.net/qq_38086247/article/details/118992974.
+
+### DNS解析过程
+
+[DNS基础之使用dig查询DNS解析过程](https://blog.csdn.net/zxl1990_ok/article/details/125452535)
+
+[What are DNS root servers? are there really only 13?](https://itroasters.com/tutorials/what-are-dns-root-servers/)
+
+### 内容协商是什么
+
+> https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Content_negotiation
+>
+> 在 [HTTP](https://developer.mozilla.org/zh-CN/docs/Glossary/HTTP) 协议中，***内容协商***是一种机制，用于为同一 URI 提供资源不同的[表示](https://developer.mozilla.org/zh-CN/docs/Glossary/Representation_header)形式，以帮助用户代理指定最适合用户的表示形式（例如，哪种文档语言、哪种图片格式或者哪种内容编码）。
+
+### Transfer-Encoding
+
+[HTTP 协议中的 Transfer-Encoding](https://www.51cto.com/article/491335.html)
+
+HTTP/1.1 则规定所有连接都必须是持久的`Connection: keep-alive`，除非显式地在头部加上 `Connection: close`

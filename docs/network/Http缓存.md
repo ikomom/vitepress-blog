@@ -191,6 +191,47 @@ expires是服务器时间，是绝对值；max-age是相对时间，
 > (2) HTTP 安全响应头（Security Response header）配置手册 - 知乎. https://zhuanlan.zhihu.com/p/335165168.
 > (3) HTTP - Access-Control-Max-Age响应头表示预检请求的结果(即 .... https://runebook.dev/zh/docs/http/headers/access-control-max-age.
 
+
+
+### [Vary](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching#vary_%E5%93%8D%E5%BA%94)
+
+区分响应的方式本质上是基于它们的 URL，但是URL相同的情况下，响应的内容可能根据`Accept`、`Accept-Language` 和 `Accept-Encoding` 的变化改变。
+
+浏览器请求URL时，服务器在响应头上设置`Vary: 请求头名`，当浏览器再次请求同样的URL时，如果Vary指定的请求头不变，并且协商缓存和强缓存都不变，就不会重新请求资源，而是返回304状态码
+
+> **Q: Vary和max-age和Etag的优先级是什么**
+>
+> A:你好，这是Bing。根据搜索结果¹，**Vary、max-age和Etag都是HTTP响应头的一部分，用于控制缓存的行为。它们之间没有固定的优先级**，而是根据不同的情况进行内容协商。
+>
+> Vary指定了哪些请求头会影响缓存的命中率，例如Accept-Encoding或User-Agent²。
+>
+> max-age指定了响应的有效期，即从响应生成到过期的时间¹。
+>
+> Etag是响应的唯一标识符，用于验证缓存是否与源服务器一致³。
+>
+> 一般来说，如果响应没有过期（即max-age没有超过），则缓存会直接返回响应，不需要验证Etag。
+>
+> 如果响应已经过期，但是Etag没有变化，那么缓存会返回一个304 Not Modified的状态码，表示响应仍然有效。
+>
+> 如果Etag也变化了，那么缓存会返回一个新的响应，并更新缓存。
+>
+> Vary会影响缓存的查找过程，因为它要求缓存根据请求头的不同值来区分不同的响应¹。
+>
+> 源: 与必应的对话， 2023/5/14
+> (1) HTTP 缓存 - HTTP | MDN - MDN Web Docs. https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching.
+> (2) 一文讲透HTTP缓存之ETag - 掘金. https://juejin.cn/post/7078272638203723789.
+> (3) 通过HTTP Header控制缓存 - 知乎. https://zhuanlan.zhihu.com/p/92104754.
+
+### 协商缓存
+
+https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching#vary_%E5%93%8D%E5%BA%94
+
+https://juejin.cn/post/7095206869072871455
+
+验证是通过使用包含 `If-Modified-Since` 或 `If-None-Match` 请求标头的**条件请求**完成的。
+
+
+
 # 名词解释
 
 ## CDN
