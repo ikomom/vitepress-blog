@@ -143,6 +143,31 @@ https://blog.csdn.net/u014600626/article/details/108222945
 
 HTTP/1.1 则规定所有连接都必须是持久的`Connection: keep-alive`，除非显式地在头部加上 `Connection: close`
 
+### 浏览器中的最大并行 HTTP 连接数？
+
+https://stackoverflow.com/questions/985431/max-parallel-http-connections-in-a-browser
+
+### 了解RTT 和RTO 对于TCP 重传的影响 
+
+https://www.cnblogs.com/zy09/p/16636881.html
+
+- **RTT (Round Trip Time)**： 对于 Ping 和 Traceroute，这测量了发送 Ping 数据包和取回 ICMP 数据包之间的往返时间；对于 TCP 连接，它非常相似；它测量发送数据包到从目标主机获得确认数据包的时间。
+- TODO
+
+### TCP_NODELAY
+
+[网络编程：TCP_NODELAY](https://zhuanlan.zhihu.com/p/80104656)
+
+[TCP连接中启用和禁用TCP_NODELAY有什么影响？](https://www.zhihu.com/question/42308970)
+
+TCP_NODELAY，会禁用Nagle算法。Nagle算法的作用是减少小包的数量
+
+- 什么是小包：小于 MSS(一个TCP段在网络上传输的最大尺寸) 的都可以定义为小包。
+- 如果前一个TCP段发送出去后，还没有收到对端的ACK包，那么接下来的发送数据会先累积起来不发。
+- 等到对端返回ACK，或者数据累积已快达到MSS，才会发送出去。
+
+
+
 ## 杂项
 
 1. ts   extend  infer 手写题、函数重载   2题
@@ -162,6 +187,14 @@ https://blog.csdn.net/pig_is_duck/article/details/105903741
 1、 重绘：元素样式的改变（但宽高、大小、位置等不变）
 
 2、 回流：元素的大小或者位置发生改变（当页面布局和几何信息发生改变的时候），触发了重新布局导致渲染树重新计算布局和渲染
+
+
+
+### BFC 是什么
+
+[10 分钟理解 BFC 原理](https://zhuanlan.zhihu.com/p/25321647)
+
+[块格式化上下文BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
 
 
 
@@ -343,3 +376,54 @@ https://www.zhihu.com/question/439229990
 > // 启动应用
 > viewModel.init();
 > ```
+
+### 【集合】统一身份认证（CAS）和OAuth2的工作流程
+
+https://blog.csdn.net/tpriwwq/article/details/125740936
+
+## 题目
+
+### 设计一个websocket客户端模块给团队人员使用
+
+> 题目：设计一个websocket客户端模块给团队人员使用
+> 要求：稳定性和可用性，不需要考虑安全性，扩展性等其他因素
+> 考察要点：如何通过设计机制来保证强稳定性，需要考虑到各种情况，保证业务高可用
+>
+> 技术方式不限，ws相关代码用js，不引入现有生态的ws的npm库
+
+#### 1. 参考页面
+
+- https://cloud.tencent.com/developer/article/2168088
+- https://juejin.cn/post/7128030988479037447
+- https://github.com/nuls-io/nuls-v2-docs/blob/master/design-zh-CHS/r.rpc-tool-websocket%E8%AE%BE%E8%AE%A1v1.3.md
+- https://socket.io/zh-CN/docs/v4/
+- https://blog.csdn.net/niugang0920/article/details/83686205
+- [十分钟了解WebSocket协议](https://zhuanlan.zhihu.com/p/145628937)
+  - 基于TCP/IP协议，独立于HTTP协议的通信协议
+  - 双向通讯，有状态，客户端一（多）个与服务端一（多）双向实时响应（客户端 ⇄ 服务端）
+  - 应用在浏览器的 Socket （是 Socket 模型接口的实现），Socket 是一个网络通信接口 （通信规范）
+  - [RFC 6455 规范](https://link.zhihu.com/?target=https%3A//tools.ietf.org/html/rfc6455) 是大多数浏览器实现的 WebSocket API 协议。
+  - **WebSocket协议不受同源策略影响。**
+  - 发心跳包最好服务器发送？
+
+- [WebSockets版本之间的协议差异是什么？](http://news.558idc.com/94700.html)
+
+- [使用WebSocket 时的安全注意事项](https://zhuanlan.zhihu.com/p/628423871)
+- [Websocket 可以玩出些什么花儿？](https://zhuanlan.zhihu.com/p/460470270)
+- [WebSocket 浅析](https://zhuanlan.zhihu.com/p/25592934)
+- [websocket长文本问题？](https://segmentfault.com/q/1010000010620489)
+- 待看
+  - https://www.cnblogs.com/cangqinglang/p/15991378.html
+  - [【译】Engine.IO协议](https://www.kevinwu0904.top/blogs/network-engineio/)
+
+
+#### 2.实现功能
+
+- 连接错误处理：当连接失败时，你需要监听error事件和close事件，获取错误信息和关闭码，并尝试重新连接或报告错误。
+- 心跳检测：为了检测和关闭断开的连接，你需要定期发送心跳包（ping帧）并等待响应（pong帧）。如果没有收到响应，你可以关闭连接并重新连接
+- 数据压缩：你可以使用permessage-deflate扩展来压缩数据负载。这个扩展可以在客户端和服务器之间协商压缩算法和参数
+
+
+
+
+
