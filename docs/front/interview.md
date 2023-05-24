@@ -1,5 +1,146 @@
 # 面试
 
+## js
+
+### 对象复制
+
+https://developer.mozilla.org/zh-CN/docs/Glossary/Deep_copy
+
+#### 浅拷贝
+
+
+
+
+
+### 对象循环引用会发生什么
+
+[简单聊一聊JS中的循环引用及问题](https://www.cnblogs.com/zhangguicheng/p/12173538.html)
+
+1. （简略的说下）使用**引用计数法**时，两个对象互相引用，就算运行完将两个变量都清空，引用计数器也不会清空，就会会造成内存泄漏；但是现在的**标记清除法**不会有这样的问题
+   - **标记清除**回收策略的大致流程是这样的，最开始的时候**将所有的变量加上标记**，**cycularReference 函数的时候会将函数内部的变量这些标记清除*， 函数执行完后再加上标记**
+2. `JSON.stringfy()`转换会报错，因为其无法将一个无限循环转换的
+
+
+
+### JavaScript垃圾回收机制
+
+[「硬核JS」你真的了解垃圾回收机制吗](https://juejin.cn/post/6981588276356317214)
+
+[JavaScript垃圾回收机制](https://zhuanlan.zhihu.com/p/60336501)
+
+1. 标记清除（mark and sweep）
+2. 引用计数（reference counting）
+
+### 什么情况会引起内存泄漏
+
+[JS中4种常见的内存泄漏](https://blog.csdn.net/weixin_44786530/article/details/126617193)
+
+[内存管理](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Memory_Management)
+
+1. **意外的全局变量引起的内存泄漏。**
+
+```js
+function foo(arg) {
+    bar = "this is a hidden global variable";// 实际上是： window.bar = "this is an explicit global variable";
+}
+
+function bar() {
+    this.variable = "potential accidental global";
+} 
+bar();// foo函数再全局作用域中被调用，因此this指向window
+```
+
+解决方法，使用严格模式避免`"use strict"`
+
+2. **闭包引起的内存泄漏**
+
+闭包可以使变量常驻内存，但如果使用不当就会在成内存泄漏
+
+```js
+var theThing = null;
+var replaceThing = function () {
+  var originalThing = theThing;
+  var unused = function () {
+    if (originalThing)
+      console.log("hi");
+  };
+  theThing = {
+    longStr: new Array(1000000).join('*'),
+    someMethod: function () {
+      console.log("someMessage");
+    }
+  };
+};
+setInterval(replaceThing, 1000);
+```
+
+> 每次调用 `replaceThing` 时，`theThing` 都会得到新的包含一个大数组和新的闭包（`someMethod`）的对象。
+>
+> 同时，没有用到的那个变量持有一个引用了 `originalThing`（`replaceThing` 调用之前的 `theThing`）闭包。
+>
+> 关键的问题是每当在同一个父作用域下创建闭包作用域的时候，这个作用域是被共享的。在这种情况下，`someMethod` 的闭包作用域和 `unused` 的作用域是共享的。
+>
+> `unused` 持有一个 `originalThing` 的引用。尽管 `unused` 从来没有被使用过，`someMethod` 可以在 `theThing` 之外被访问。
+>
+> 而且 `someMethod` 和 `unused` 共享了闭包作用域，即便 `unused` 从来都没有被使用过，它对 `originalThing` 的引用还是强制它保持活跃状态（阻止它被回收）。
+>
+> 当这段代码重复运行时，将可以观察到内存消耗稳定地上涨，并且不会因为 GC 的存在而下降。
+>
+> 本质上来讲，创建了一个闭包链表（根节点是 `theThing` 形式的变量），而且每个闭包作用域都持有一个对大数组的间接引用，这导致了一个巨大的内存泄露。
+
+3. **没有清理的DOM元素引用**
+
+原因：虽然别的地方删除了，但是对象中还存在对dom的引用
+
+解决：手动删除。
+
+4. **被遗忘的定时器或者回调**
+
+手动删除定时器
+
+5. **子元素存在引用引起的内存泄漏**
+
+原因：div中的ul li 得到这个div，会间接引用某个得到的li，那么此时因为div间接引用li，即使li被清空，也还是在内存中，并且只要li不被删除，他的父元素都不会被删除。
+
+
+
+### 堆栈
+
+[JavaScript 内存机制](https://blog.csdn.net/davidffffff/article/details/107716345)
+
+**基本类型**的值（Undefined/Null/Boolean/Number/String）被保存在**栈内存**中。从一个变量向另一个变量**复制基本类型的值**，**会创建这个值的一个副本**。
+
+- **引用类型**的值是对象，保存在**堆内存**中。
+  - 包含引用类型值的变量实际上包含的并不是对象本身，而是一个**指向该对象的指针**。从一个变量向另一个变量复制引用类型的值，**复制的其实是指针，因此两个变量最终都指向同一个对象**。
+  - js不允许直接访问内存中的位置，也就是**不能直接访问操作对象的内存空间**。在操作对象时，实际上是在操作对象的引用而不是实际的对象。
+
+
+
+1、**堆栈空间**分配区别：
+
+- 栈（操作系统）：由**操作系统自动分配释放** ，**存放函数的参数值，局部变量的值等**。其操作方式类似于**数据结构中的栈**
+
+- 堆（操作系统）： 一般由**程序员分配释放，若程序员不释放，程序结束时可能由OS回收，分配方式倒是类似于链表**
+
+2、堆栈缓存方式区别：
+
+- 栈使用的是**一级缓存**， 他们通常都是被调用时处于**存储空间（内存）**中，**调用完毕立即释放**
+
+- 堆是存放在**二级缓存**中，**生命周期由虚拟机的垃圾回收算法来决定**（并不是一旦成为孤儿对象就能被回收）。所以调用这些对象的速度要相对来得低一些。
+
+3、堆栈数据结构区别：
+
+- 堆（数据结构）：堆可以被看成是一棵树，如：堆排序；
+- 栈（数据结构）：一种先进后出的数据结构。
+
+
+
+
+
+### TODO什么是闭包
+
+
+
 
 
 ## HTTP
@@ -195,6 +336,15 @@ https://blog.csdn.net/pig_is_duck/article/details/105903741
 [10 分钟理解 BFC 原理](https://zhuanlan.zhihu.com/p/25321647)
 
 [块格式化上下文BFC](https://developer.mozilla.org/zh-CN/docs/Web/Guide/CSS/Block_formatting_context)
+
+### flex布局子元素宽度超出父元素问题
+
+https://juejin.cn/post/6974356682574921765
+
+1. 设置`min-width：0`可以解决当`flex子元素`的子元素大小为`auto`的情况；
+2. 设置`overflow`不为`visible`可以解决所有情况下的麻烦；
+
+[flex-shrink](https://www.runoob.com/cssref/css3-pr-flex-shrink.html)
 
 
 
