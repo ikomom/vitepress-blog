@@ -1,5 +1,23 @@
 # 面试
 
+## 链接
+
+[2021年前端面试必读文章【超三百篇文章/赠复习导图】](https://juejin.cn/post/6844904116339261447#heading-55)
+
+[做了一份前端面试复习计划，保熟～](https://juejin.cn/post/7061588533214969892#heading-30)
+
+## HTML
+
+### script 标签中的 async 和 defer 属性
+
+[script 标签中的 async 和 defer 属性](https://juejin.cn/post/6894629999215640583)
+
+- `script` ：**会阻碍 HTML 解析**，只有下载好并执行完脚本才会继续解析 HTML。
+- `async script` ：解析 HTML 过程中进行脚本的**异步下载**，**下载成功立马执行**，有**可能会阻断 HTML 的解析**。
+- `defer script`：完全不会阻碍 HTML 的解析，解析完成(onContentLoaded)之后再按照**顺序执行脚本**。
+
+![image.png](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8ea091aed8364b88a653a13c4845a824~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp)
+
 ## js
 
 ### 对象复制
@@ -30,6 +48,14 @@ https://developer.mozilla.org/zh-CN/docs/Glossary/Deep_copy
 
 1. 标记清除（mark and sweep）
 2. 引用计数（reference counting）
+
+
+
+>  这个过程是周期性的，即垃圾回收程序每隔一定时间（或者说在代码执行过程中某个预定的收集时间）就会自动运行。垃圾回收过程是一个近似且不完美的方案，因为某块内存是否还有用，属于“不可判定的”问题，意味着靠算法是解决不了的
+>
+> 我们以函数中局部变量的正常生命周期为例。函数中的局部变量会在函数执行时存在。此时，栈（或堆）内存会分配空间以保存相应的值。函数在内部使用了变量，然后退出。此时，就不再需要那个局部变量了，它占用的内存可以释放，供后面使用。这种情况下显然不再需要局部变量了，但并不是所有时候都会这么明显。垃圾回收程序必须跟踪记录哪个变量还会使用，以及哪个变量不会再使用，以便回收内存。如何标记未使用的变量也许有不同的实现方式，用到过两种主要的标记策略：标记清理和引用计数
+
+**解除对一个值的引用并不会自动导致相关内存被回收。解除引用的关键在于确保相关的值已经不在上下文里了，因此它在下次垃圾回收时会被回收。**
 
 ### 什么情况会引起内存泄漏
 
@@ -102,6 +128,67 @@ setInterval(replaceThing, 1000);
 
 原因：div中的ul li 得到这个div，会间接引用某个得到的li，那么此时因为div间接引用li，即使li被清空，也还是在内存中，并且只要li不被删除，他的父元素都不会被删除。
 
+### 静态分配与对象池
+
+> 为了提升 JavaScript 性能，最后要考虑的一点往往就是压榨浏览器了。此时，一个关键问题就是**如何减少浏览器执行垃圾回收的次数**。开发者无法直接控制什么时候开始收集垃圾，但**可以间接控制触发垃圾回收的条件**。理论上，如果能够合理使用分配的内存，同时避免多余的垃圾回收，那就可以保住因释放内存而损失的性能。**浏览器决定何时运行垃圾回收程序的一个标准就是对象更替的速度**
+
+```js
+function addVector(a, b) { 
+ let resultant = new Vector(); 
+ resultant.x = a.x + b.x; 
+ resultant.y = a.y + b.y; 
+ return resultant; 
+}
+```
+
+上面这个函数，如果频繁创建的话，就会一直创建一个新的Vector，更快的触发垃圾回收。所以，不让它一直创建，就可以提升性能
+
+```js
+function addVector(a, b, resultant) { 
+ resultant.x = a.x + b.x; 
+ resultant.y = a.y + b.y; 
+ return resultant; 
+}
+```
+
+当然，这需要在其他地方实例化矢量参数 resultant，但这个函数的行为没有变。那么在哪里创建矢量可以不让垃圾回收调度程序盯上呢？
+
+**一个策略是使用对象池**。在初始化的某一时刻，可以创建一个对象池，用来管理一组可回收的对象，应用程序可以向这个对象池请求一个对象、设置其属性、使用它，然后在操作完成后再把它还给对象池。由于没发生对象初始化，垃圾回收探测就不会发现有对象更替，因此垃圾回收程序就不会那么频繁地运行
+
+```js
+// vectorPool 是已有的对象池 
+let v1 = vectorPool.allocate(); 
+let v2 = vectorPool.allocate(); 
+let v3 = vectorPool.allocate(); 
+v1.x = 10; 
+v1.y = 5; 
+v2.x = -3; 
+v2.y = -6; 
+addVector(v1, v2, v3); 
+console.log([v3.x, v3.y]); // [7, -1] 
+// 释放
+vectorPool.free(v1); 
+vectorPool.free(v2); 
+vectorPool.free(v3); 
+// 如果对象有属性引用了其他对象
+// 则这里也需要把这些属性设置为 null 
+v1 = null; 
+v2 = null; 
+v3 = null;
+```
+
+如果对象池只按需分配矢量**（在对象不存在时创建新的，在对象存在时则复用存在的）**，那么这个实现本质上是一种**贪婪算法**，有单调增长但为静态的内存。这个对象池必须使用某种结构维护所有对象，数组是比较好的选择。不过，使用数组来实现，必须留意不要招致额外的垃圾回收
+
+```js
+let vectorList = new Array(100); 
+let vector = new Vector(); 
+vectorList.push(vector);
+```
+
+由于 JavaScript 数组的大小是动态可变的，引擎会删除大小为 100 的数组，再创建一个新的大小为200 的数组。垃圾回收程序会看到这个删除操作，说不定因此很快就会跑来收一次垃圾。要避免这种动态分配操作，可以在初始化时就创建一个大小够用的数组，从而避免上述先删除再创建的操作。不过，**必须事先想好这个数组有多大**
+
+> 静态分配是优化的一种极端形式。如果你的应用程序被垃圾回收严重地拖了后腿，可以利用它提升性能。但这种情况并不多见。大多数情况下，这都属于过早优化，因此不用考虑。
+
 
 
 ### 堆栈
@@ -135,6 +222,136 @@ setInterval(replaceThing, 1000);
 
 
 
+### 执行上下文
+
+**执行上下文（以下简称“上下文”）**的概念在 JavaScript 中是颇为重要的。变量或函数的上下文**决定了它们可以访问哪些数据**，以及它们的行为。**每个上下文都有一个关联的变量对象**（variable object），而这个上下文中定义的所有变量和函数都存在于这个对象上
+
+全局上下文是最外层(window)的上下文，所有**var定义的全局变量和函数**，都会挂载到window上，成为它的属性和方法。
+
+使用 let 和 const 的顶级声明能引用，但不会挂载window上，其在**作用域链解析**的效果是一样的
+
+上下文在**其所有代码都执行完毕后会被销毁**，包括定义在它上面的所有变量和函数（**全局上下文在应用程序退出前才会被销毁**，比如关闭网页或退出浏览器）。
+
+**每个函数调用都有自己的上下文**。当**代码执行流进入函数时，函数的上下文被推到一个上下文栈上**。在**函数执行完之后，上下文栈会弹出该函数上下文，将控制权返还给之前的执行上下文**
+
+上下文中的代码在执行的时候，会创建变量对象的一个**作用域链（scope chain）**。这个作用域链决定了各级上下文中的代码在访问变量和函数时的顺序。**代码正在执行的上下文的变量对象始终位于作用域链的最前端**。若上下文是函数，则其活动对象（activation object）(arguments)用作变量对象
+
+代码执行时的**标识符解析是通过沿作用域链逐级搜索标识符名称**完成的。搜索过程始终**从作用域链的最前端开始**，然后逐级往后，直到找到标识符。（如果没有找到标识符，那么通常会报错。）
+
+**局部作用域中定义的变量可用于在局部上下文中替换全局变量**（因为是从作用域链从前往后找，所以，局部肯定比全局先被找到）
+
+
+
+#### 作用域链增强
+
+虽然执行上下文主要有全局上下文和函数上下文两种（**eval()调用内部存在第三种上下文**），但有其他方式来增强作用域链
+
+某些语句会导致在作用域链前端临时添加一个上下文，这个上下文在代码执行后会被删除
+
+- try/catch 语句的 catch 块
+
+- with 语句
+
+```js
+function buildUrl() { 
+ let qs = "?debug=true"; 
+ with(location){ 
+ let url = href + qs; 
+ } 
+ return url; 
+}
+```
+
+这里，with 语句将 location 对象作为上下文，因此 location 会被添加到作用域链前端。 with 语句中的代码引用变量 href 时，实际上引用的是location.href。找qs时，location内没有这个属性，才会去找函数的qs
+
+
+
+#### 例子
+
+假设我们定义一个二层闭包
+
+```js
+let a = 33
+var b = 222
+var fuc = function three() {
+    let gg = 23;
+    try {
+        console.log(a)
+        return function two() {
+            var tow_gg = 999
+            console.log('two', )
+            eval(`console.log('two', tow_gg)`)
+            return function one() {
+                console.log('one', this)// 指向window
+                 return {tow_gg, gg}
+            }
+        }
+    } catch(e) {}
+}
+console.dir(fuc()())
+```
+
+![image-20230527120111449](C:\Users\31579\AppData\Roaming\Typora\typora-user-images\image-20230527120111449.png)
+
+> A：你好，这是Bing。我可以帮你回答这个问题。😊
+>
+> js怎么查看当前上下文，这个问题有多种答案，取决于你想要查看的是什么类型的上下文。一般来说，上下文（Context）是程序运行的环境，在上下文中存储了一段程序运行时所需要的全部数据¹。
+>
+> 如果你想要查看的是**执行上下文**，也就是在执行一段代码时创建的对象，那么你可以使用**调试工具**来查看当前执行的js代码的位置和变量的值⁴。例如，在Chrome浏览器中，你可以按F12键打开开发者工具，然后在Sources面板中找到你想要调试的js文件，然后在代码中设置断点，然后运行代码，当代码执行到断点处时，你就可以在右侧的Scope面板中查看当前执行上下文的词法环境对象和变量环境对象¹。
+>
+> 如果你想要查看的是**全局上下文**，也就是在开始执行一段javascript代码时所创建的上下文对象，在html环境中，该上下文对象就是window对象¹。在node环境中为global对象¹。那么你可以直接使用window或global来访问全局上下文对象。
+>
+> 如果你想要查看的是**函数上下文**，也就是在一个函数开始执行时所创建的上下文对象¹，那么你可以使用**arguments.callee**来获取当前函数对象²，然后使用**arguments.callee.caller**来获取调用当前函数的函数对象²。例如：
+>
+> ```javascript
+> function f1() {
+>   console.log(arguments.callee); //打印f1函数对象
+>   console.log(arguments.callee.caller); //打印f2函数对象
+> }
+> 
+> function f2() {
+>   f1();
+> }
+> 
+> f2();
+> ```
+>
+> 如果你想要查看的是**this指向**，也就是在执行一段代码时this关键字所指向的对象，那么你可以直接使用this来获取当前this指向³。不过要注意，this指向并不是固定不变的，它会根据函数调用方式的不同而有所变化³。例如：
+>
+> ```javascript
+> var name = "global";
+> 
+> function f1() {
+>   console.log(this.name); //打印global
+> }
+> 
+> var obj = {
+>   name: "obj",
+>   f2: function() {
+>     console.log(this.name); //打印obj
+>     f1(); //打印global
+>     f1.call(this); //打印obj
+>   }
+> };
+> 
+> f1(); //打印global
+> obj.f2(); //打印obj global obj
+> ```
+>
+> 以上就是我能找到的关于js怎么查看当前上下文的一些答案，希望对你有所帮助。
+>
+> 源: 与必应的对话， 2023/5/27
+> (1) 理解 JavaScript 的执行上下文这篇就够了！ - 掘金. https://juejin.cn/post/6954966248233009182.
+> (2) 如何知道浏览器当前执行的JS代码的位置？ - 知乎. https://www.zhihu.com/question/21073282.
+> (3) JavaScript中的上下文环境 - 掘金. https://juejin.cn/post/7008866769301405726.
+> (4) js中获取上下文路径_xb12369的博客-CSDN博客. https://blog.csdn.net/xb12369/article/details/46416845.
+
+
+
+> [javascript——执行环境和作用域](https://blog.csdn.net/viewyu12345/article/details/79653587)
+>
+> [ scopes结合实际分析 ](https://blog.csdn.net/viewyu12345/article/details/108703891)
+
 
 
 ### TODO什么是闭包
@@ -142,6 +359,191 @@ setInterval(replaceThing, 1000);
 
 
 
+
+### es6或更高的js数据结构，如WeakMap，怎么转换成旧时代浏览器可以运行的方式，原理是什么
+
+> 你好，这是Bing。我可以帮你回答这个问题。😊
+>
+> es6或更高的js数据结构，如WeakMap，怎么转换成旧时代浏览器可以运行的方式，原理是什么，这个问题的答案是使用**polyfill**，也就是一种用来模拟原生功能的代码¹。
+>
+> polyfill的原理是检测浏览器是否支持某个特性，如果不支持，就用js代码来实现该特性的功能¹。例如，WeakMap是一种用来存储键值对的数据结构，其中键必须是对象，而且不会阻止垃圾回收²。如果浏览器不支持WeakMap，就可以用一个数组来存储键值对，然后用一个隐藏属性来标记键对象，以便在垃圾回收时删除对应的键值对³。
+>
+> 有一些开源的库提供了es6或更高的js数据结构的polyfill，例如weakmap-polyfill¹ 和es6-structs。你可以使用npm安装这些库，然后在你的代码中引入它们，就可以在旧时代浏览器中使用WeakMap等数据结构了¹ 。
+>
+> 以上就是我能找到的关于es6或更高的js数据结构，如WeakMap，怎么转换成旧时代浏览器可以运行的方式，原理是什么的一些答案，希望对你有所帮助。
+>
+> 源: 与必应的对话， 2023/5/27
+> (1) polygonplanet/weakmap-polyfill: ECMAScript6 WeakMap polyfill - GitHub. https://github.com/polygonplanet/weakmap-polyfill.
+> (2) weakmap-polyfill - npm. https://www.npmjs.com/package/weakmap-polyfill.
+> (3) dregre/es6-structs: Polyfills for WeakMap, Map, WeakSet, and Set. - GitHub. https://github.com/dregre/es6-structs.
+
+
+
+### WeakMap的使用方式
+
+WeakMap中，只要值的引用不存在，就会自动销毁；并且因为其这个特性，它是不可迭代的，只能通过原始引用取得键值
+
+```js
+const wm = new WeakMap(); 
+wm.set({}, "val");
+```
+
+set()方法初始化了一个新对象并将它用作一个字符串的键。因为**没有指向这个对象的其他引用**， 所以当这行代码执行完成后，**这个对象键就会被当作垃圾回收**。
+
+#### 1. 私有变量
+
+弱映射造就了在 JavaScript 中实现真正**私有变量**的一种新方式。前提是，**私有变量会存储在弱映射中，以对象实例为键，以私有成员的字典为值**
+
+```js
+const wm = new WeakMap(); 
+class User { 
+ constructor(id) { 
+     this.idProperty = Symbol('id'); 
+     this.setId(id); 
+ } 
+ setPrivate(property, value) { 
+     const privateMembers = wm.get(this) || {}; 
+     privateMembers[property] = value; 
+     // 当前引用作为键，成员对象作为值
+     wm.set(this, privateMembers); 
+ } 
+ getPrivate(property) { 
+	 return wm.get(this)[property]; 
+ } 
+ setId(id) { 
+     // 设置私有, property值都是固定的
+	 this.setPrivate(this.idProperty, id); 
+ } 
+ getId() { 
+	 return this.getPrivate(this.idProperty); 
+ } 
+} 
+const user = new User(123); 
+alert(user.getId()); // 123 
+user.setId(456); 
+alert(user.getId()); // 456 
+// 并不是真正私有的
+alert(wm.get(user)[user.idProperty]); // 456
+```
+
+对于上面的实现，外部代码只需要拿到**对象实例的引用和弱映射**，就可以取得“私有”变量了, 为了避免这种访问，可以用一个闭包把 WeakMap 包装起来，这样就可以把弱映射与外界完全隔离开了
+
+```js
+// 立即执行函数，闭包，wm一直被返回的User的class持有，就不会触发垃圾回收
+const User = (() => { 
+     const wm = new WeakMap(); 
+     class User { 
+         constructor(id) { 
+       	  	this.idProperty = Symbol('id');
+        	this.setId(id); 
+         } 
+     	setPrivate(property, value) { 
+             const privateMembers = wm.get(this) || {}; 
+             privateMembers[property] = value; 
+             wm.set(this, privateMembers); 
+     	} 
+         getPrivate(property) { 
+       	 	 return wm.get(this)[property]; 
+         } 
+         setId(id) { 
+        	 this.setPrivate(this.idProperty, id); 
+         } 
+         getId(id) { 
+        	 return this.getPrivate(this.idProperty); 
+         } 
+     } 
+     return User; 
+})();
+const user = new User(123); 
+alert(user.getId()); // 123 
+user.setId(456); 
+alert(user.getId()); // 456
+```
+
+这样，拿不到弱映射中的健，也就无法取得弱映射中对应的值。虽然这防止了前面提到的访问，但整个代码也完全陷入了 ES6 之前的闭包私有变量模式。
+
+```js
+const User = (function () {
+  const wm = new WeakMap()
+  function User() {
+    const idProperty = Symbol('id')
+    return {
+      set(id) {
+        const privateMember = wm.get(this) || {}
+        privateMember[idProperty] = id
+        wm.set(this, privateMember)
+      },
+      get(id) {
+        return wm.get(this)[idProperty]
+      },
+    }
+  }
+  return User
+})()
+```
+
+#### 2. DOM 节点元数据
+
+因为 WeakMap 实例不会妨碍垃圾回收，所以非常适合保存关联元数据。来看下面这个例子，其中使用了常规的 Map
+
+```js
+const m = new Map(); 
+const loginButton = document.querySelector('#login'); 
+// 给这个节点关联一些元数据
+m.set(loginButton, {disabled: true});
+```
+
+假设在上面的代码执行后，页面被 JavaScript 改变了，原来的登录按钮从 DOM 树中被删掉了。但由于映射中还保存着按钮的引用，所以对应的 DOM 节点仍然会逗留在内存中，除非明确将其从映射中删除或者等到映射本身被销毁
+
+如果这里使用的是弱映射，如以下代码所示，那么当节点从 DOM 树中被删除后，垃圾回收程序就可以立即释放其内存（假设没有其他地方引用这个对象）：
+
+```js
+const wm = new WeakMap(); 
+const loginButton = document.querySelector('#login'); 
+// 给这个节点关联一些元数据
+wm.set(loginButton, {disabled: true});
+```
+
+### 迭代器
+
+如果迭代器没有关闭，则还可以继续从上次离开的地方继续迭代。比如，数组的迭代器就是不能关闭的
+
+```js
+let a = [1, 2, 3, 4, 5];
+let iter = a[Symbol.iterator](); 
+for (let i of iter) { 
+ console.log(i); 
+ if (i > 2) { 
+ break 
+ } 
+} 
+// 1 
+// 2 
+// 3 
+for (let i of iter) { 
+ console.log(i); 
+} 
+// 4 
+// 5
+```
+
+因为 return()方法是可选的，所以并非所有迭代器都是可关闭的。要知道某个迭代器是否可关闭，可以测试这个迭代器实例的 return 属性是不是函数对象。不过，仅仅给一个不可关闭的迭代器增加这个方法并不能让它变成可关闭的。这是因为调用 return()不会强制迭代器进入关闭状态。即便如此，return()方法还是会被调用。
+
+那如何关闭？答案是不去管它，或者生成新的迭代对象，或者直接迭代它的本体，不用迭代器
+
+[JavaScript迭代器如何关闭?](https://www.zhihu.com/question/462012759)
+
+
+
+### [从两个角度理解为什么 JS 中没有函数重载 ](https://www.cnblogs.com/zhangguicheng/p/12155512.html)
+
+1. 方法签名
+
+方法签名指的是**函数的名称加形参列表**，并且通过函数的名称或者形参列表都可以区分出是不同的函数。而js是弱类型语言，参数不固定，也没有类型，所以没有重载
+
+2. 函数指针
+
+定义了两个同名函数，则后定义的会覆盖先定义的
 
 ## HTTP
 
@@ -319,7 +721,17 @@ TCP_NODELAY，会禁用Nagle算法。Nagle算法的作用是减少小包的数�
 6. commonjs  esm 区别
 7. prefetch preload 区别
 
+### 前端性能优化总结
+
+https://blog.csdn.net/qq_41328247/article/details/113859458
+
+## 前端安全
+
+
+
 ## CSS
+
+
 
 ### 重绘和回流有什么区别?
 
