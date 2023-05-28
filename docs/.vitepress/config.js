@@ -36,7 +36,6 @@ export default defineConfig({
         items: [
           {text: '[TODO]react状态管理', link: '/front/state'},
           {text: '[TODO]状态机', link: '/front/stateMachine'},
-          {text: '面试复习', link: '/front/interview'},
         ]
       },
       {
