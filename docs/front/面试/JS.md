@@ -1079,7 +1079,13 @@ export const nextTick = (function () {
 
 
 
+##  API
 
+#### **XMLHttpRequest** 
+
+[你不知道的 XMLHttpRequest](https://juejin.cn/post/6844903472714743816#heading-11)
+
+`@mswjs/src/interceptors/XMLHttpRequest/XMLHttpRequestOverride.ts`可以参考这个封装
 
 ## 问答
 
