@@ -964,128 +964,15 @@ JS**调用栈**采用的是**后进先出**的规则，当函数执行的时候�
 
  
 
-### vue 的nextTick
-
-[简单理解Vue中的nextTick](https://www.jianshu.com/p/a7550c0e164f)
-
-```jsx
-const callbacks = []
-// 立即执行函数,返回一个闭包
-export const nextTick = (function () {
-
-  let pending = false
-  // 运行函数
-  let timerFunc
-
-  function nextTickHandler () {
-    pending = false
-    // 复制一份callbacks 
-    const copies = callbacks.slice(0)
-    // 释放旧内存
-    callbacks.length = 0
-    // 批量运行回调 
-    for (let i = 0; i < copies.length; i++) {
-      copies[i]()
-    }
-  }
-
-  // the nextTick behavior leverages the microtask queue, which can be accessed
-  // via either native Promise.then or MutationObserver.
-  // MutationObserver has wider support, however it is seriously bugged in
-  // UIWebView in iOS >= 9.3.3 when triggered in touch event handlers. It
-  // completely stops working after triggering a few times... so, if native
-  // Promise is available, we will use it:
-  /* istanbul ignore if */
-  if (typeof Promise !== 'undefined' && isNative(Promise)) {
-    var p = Promise.resolve()
-    var logError = err => { console.error(err) }
-    timerFunc = () => {
-      p.then(nextTickHandler).catch(logError)
-      // in problematic UIWebViews, Promise.then doesn't completely break, but
-      // it can get stuck in a weird state where callbacks are pushed into the
-      // microtask queue but the queue isn't being flushed, until the browser
-      // needs to do some other work, e.g. handle a timer. Therefore we can
-      // "force" the microtask queue to be flushed by adding an empty timer.
-      if (isIOS) setTimeout(noop)
-    }
-  } else if (!isIE && typeof MutationObserver !== 'undefined' && (
-    isNative(MutationObserver) ||
-    // PhantomJS and iOS 7.x
-    MutationObserver.toString() === '[object MutationObserverConstructor]'
-  )) {
-    // use MutationObserver where native Promise is not available,
-    // e.g. PhantomJS, iOS7, Android 4.4
-    var counter = 1
-    var observer = new MutationObserver(nextTickHandler)
-    var textNode = document.createTextNode(String(counter))
-    observer.observe(textNode, {
-      characterData: true
-    })
-    timerFunc = () => {
-      counter = (counter + 1) % 2
-      textNode.data = String(counter)
-    }
-  } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
-  // Fallback to setImmediate.
-  // Technically it leverages the (macro) task queue,
-  // but it is still a better choice than setTimeout.
-     timerFunc = () => {
-        setImmediate(flushCallbacks)
-      }
-    }
-    else {
-    // fallback to setTimeout
-    /* istanbul ignore next */
-    timerFunc = () => {
-      setTimeout(nextTickHandler, 0)
-    }
-  }
-
-  return function queueNextTick (cb?: Function, ctx?: Object) {
-    let _resolve
-    // 放入回调队列
-    callbacks.push(() => {
-      if (cb) {
-        try {
-          // 调用回调  
-          cb.call(ctx)
-        } catch (e) {
-          handleError(e, ctx, 'nextTick')
-        }
-      } else if (_resolve) {
-        // 运行微任务  
-        _resolve(ctx)
-      }
-    })
-     // 未发起发起更新
-    if (!pending) {
-      pending = true
-      timerFunc()
-    }
-      
-     // 回调不存在就用promise做微任务后调用
-    if (!cb && typeof Promise !== 'undefined') {
-      return new Promise((resolve, reject) => {
-        _resolve = resolve
-      })
-    }
-  }
-})()
-```
-
-1. 优先使用Promise, `IOS`环境用setTimeout, 触发nextTickHandler
-2. 不是IE, 且支持MutationObserver的直接创建内存dom, 监听dom, 触发nextTickHandler
-3. 其他用setTimeout, 触发nextTickHandler
-
-
-
 ##  API
 
 #### **XMLHttpRequest** 
 
 [你不知道的 XMLHttpRequest](https://juejin.cn/post/6844903472714743816#heading-11)
 
-`@mswjs/src/interceptors/XMLHttpRequest/XMLHttpRequestOverride.ts`可以参考这个封装
+[浏览器原理 16 # WebAPI：XMLHttpRequest是怎么实现的？](https://blog.51cto.com/kaimo313/5588730?u_atoken=73adc4e3-38bc-43c4-bd6c-087ce2b8417b&u_asession=01ljSl4y9K2L3WNSrYkz3GvjwyLe2kxONedm92J-v1BYEhnkmYl853nUsBI5ndMdTJX0KNBwm7Lovlpxjd_P_q4JsKWYrT3W_NKPr8w6oU7K8bR9gCR6IBTSe5ADpEBlJPC87erDcbjPeVmmYm9Bwo5GBkFo3NEHBv0PZUm6pbxQU&u_asig=05AKYiLESMHAo-kt1XbMg8Muf06BRiwXJT_aRGEvYd8GDuUgnD1bRVAr--aIepErcpsZnDYY4LarXoiHiwaO5iunJoBAf3qoTPhwiAGzrv5p7SnfOQuyqDTvAcz7VMFSYPypMNaUc3J_d-Hqh4SaxeOIp9fKGlrCFhblb41ywN-5X9JS7q8ZD7Xtz2Ly-b0kmuyAKRFSVJkkdwVUnyHAIJzdvZCy5SVOMnx8xDv66_mjrxW4QleAWzAYI39UmizlcDlSZUIrL_IYSL36TRsulst-3h9VXwMyh6PgyDIVSG1W-7om_KiZSyYHQaLgB0NBigSEcogZ2DgZT5yDQWmrrPR4md-LDKLYHPrf8gI7SD7fgexYQFuqTMqAptfdntnflGmWspDxyAEEo4kbsryBKb9Q&u_aref=DkoPqiX6t7MtkWFB1yzpPia%2FhIw%3D)
+
+`@mswjs/src/interceptors/XMLHttpRequest/XMLHttpRequestOverride.ts`可以参考这个二次封装
 
 ## 问答
 
