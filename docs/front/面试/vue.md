@@ -1,5 +1,13 @@
 # vue
 
+## 实际
+
+### 图片懒加载和预加载的实现与原理
+
+https://blog.csdn.net/Oruizn/article/details/115028962
+
+
+
 ## 源码
 
 
