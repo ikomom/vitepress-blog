@@ -962,7 +962,38 @@ JS**调用栈**采用的是**后进先出**的规则，当函数执行的时候�
 
 > 即执行栈中运行同步任务 -> 检查微任务 -> 宏任务 -> 检查微任务
 
- 
+ #### 测试
+
+```js
+(async () => {
+  async function a1() {
+    console.log('async a1') // 2
+    await a2()
+  }
+
+  async function a2() {
+    console.log('async a2') // 3
+  }
+  async function a3() {
+    console.log('async a3') // 6
+  }
+  console.log('start') // 1
+  a1()
+  setTimeout(() => {
+    console.log('timeout 1') // 8
+  }, 0)
+  Promise.resolve().then(async () => {
+    console.log('Promise 1') // 5 
+    await a3()
+  }).then(() => {
+    console.log('Promise 2') // 7
+  })
+  console.log('end') // 4
+})()
+
+```
+
+
 
 ##  API
 
