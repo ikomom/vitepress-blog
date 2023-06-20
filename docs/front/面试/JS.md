@@ -993,6 +993,214 @@ JS**调用栈**采用的是**后进先出**的规则，当函数执行的时候�
 
 ```
 
+## abort
+
+### 1. cancel promise
+
+```html
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="status">IDLE</div>
+  <button type="button" id="abort-btn" onclick="cancelPromise()">Abort</button>
+</body>
+<script>
+
+  const controller = new window.AbortController()
+  const signal = controller.signal
+  function cancelPromise() {
+    controller.abort()
+    console.log('cancelPromise', controller)
+  }
+
+  window.onload = () => {
+    const elem = document.querySelector('#status')
+  
+    const example = (s) => {
+      return new Promise((resolve, reject) => {
+        let timeout = setTimeout(() => {
+          elem.textContent = 'Promise resolved'
+          resolve('resolved')
+        }, 5000)
+        s.addEventListener('abort', () => {
+          elem.textContent = 'Promise aborted'
+          clearTimeout(timeout)
+          reject('Promise aborted')
+        })
+      })
+    }
+
+    example(signal)
+      .then(data => {
+        console.log(data)
+      }).catch(err => {
+      console.log("Catch: ", err)
+    })
+    document.getElementById('abort-btn').addEventListener('click', cancelPromise);
+
+  }
+</script>
+</html>
+```
+
+### 2. cancel fetch
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Abort APi example</title>
+  <style>
+    .wrapper {
+      width: 70%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    video {
+      max-width: 100%;
+    }
+
+    .wrapper > div {
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrapper">
+  <h1>Simple offline video player</h1>
+  <div class="controls">
+    <button class="download">Download video</button>
+    <button class="abort hidden">Cancel download</button>
+    <p class="reports"></p>
+  </div>
+  <div class="videoWrapper hidden">
+    <p>Sintel © copyright Blender Foundation | <a href="http://www.sintel.org/">www.sintel.org</a>.</p>
+  </div>
+</div>
+</body>
+<script>
+  const url = 'https://mdn.github.io/dom-examples/abort-api/sintel.mp4';
+
+  const videoWrapper = document.querySelector('.videoWrapper');
+  const downloadBtn = document.querySelector('.download');
+  const abortBtn = document.querySelector('.abort');
+  const reports = document.querySelector('.reports');
+
+  let controller;
+  let progressAnim;
+  let animCount = 0;
+
+  downloadBtn.addEventListener('click', fetchVideo);
+
+  abortBtn.addEventListener('click', () => {
+    controller.abort();
+    console.log('Download aborted');
+    downloadBtn.classList.remove('hidden');
+  });
+
+  function fetchVideo() {
+    controller = new AbortController();
+    const signal = controller.signal;
+    downloadBtn.classList.add('hidden');
+    abortBtn.classList.remove('hidden');
+    reports.textContent = 'Video awaiting download...';
+    fetch(url, { signal }).then((response) => {
+      if (response.status === 200) {
+        runAnimation();
+        setTimeout(() => console.log('Body used: ', response.bodyUsed), 1);
+        return response.blob();
+      } else {
+        throw new Error('Failed to fetch');
+      }
+    }).then((myBlob) => {
+      const video = document.createElement('video');
+      video.setAttribute('controls', '');
+      video.src = URL.createObjectURL(myBlob);
+      videoWrapper.appendChild(video);
+
+      videoWrapper.classList.remove('hidden');
+      abortBtn.classList.add('hidden');
+      downloadBtn.classList.add('hidden');
+
+      reports.textContent = 'Video ready to play';
+    }).catch((e) => {
+      abortBtn.classList.add('hidden');
+      downloadBtn.classList.remove('hidden');
+      reports.textContent = 'Download error: ' + e.message;
+    }).finally(() => {
+      clearInterval(progressAnim);
+      animCount = 0;
+    });
+  }
+
+  function runAnimation() {
+    progressAnim = setInterval(() => {
+      switch (animCount++ & 3) {
+        case 0: reports.textContent = 'Download occuring; waiting for video player to be constructed'; break;
+        case 1: reports.textContent = 'Download occuring; waiting for video player to be constructed.'; break;
+        case 2: reports.textContent = 'Download occuring; waiting for video player to be constructed..'; break;
+        case 3: reports.textContent = 'Download occuring; waiting for video player to be constructed...'; break;
+      }
+    }, 300);
+  }
+
+</script>
+
+</html>
+
+```
+
+### 3. remove EventListener
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<table id="outside">
+  <tr><td id="t1">one</td></tr>
+  <tr><td id="t2">two</td></tr>
+</table>
+<script>
+  // 为 table 添加可被移除的事件监听器
+  const controller = new AbortController();
+  const el = document.getElementById("outside");
+  el.addEventListener("click", modifyText, { signal: controller.signal } );
+
+  // 改变 t2 内容的函数
+  function modifyText() {
+    const t2 = document.getElementById("t2");
+    if (t2.firstChild.nodeValue === "three") {
+      t2.firstChild.nodeValue = "two";
+    } else {
+      t2.firstChild.nodeValue = "three";
+      controller.abort(); // 当值变为 "three" 后，移除监听器
+    }
+  }
+
+</script>
+</body>
+</html>
+```
+
+
+
 
 
 ##  API
