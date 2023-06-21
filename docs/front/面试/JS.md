@@ -280,11 +280,11 @@ export class cloneable {
 
 无论何时，只要创建一个函数，就会按照特定的规则为这个函数创建一个 `prototype` 属性（指向**原型对象**）
 
-![image-20230528121335129](C:\Users\31579\AppData\Roaming\Typora\typora-user-images\image-20230528121335129.png)
+![image-20230528121335129](/images/image-20230528121335129.png)
 
 `Name.prototype.constructor` 指向 `Name`。然后，因构造函数而异，可能会给原型对象添加其他属性和方法。
 
-![image-20230528121523878](C:\Users\31579\AppData\Roaming\Typora\typora-user-images\image-20230528121523878.png)
+![image-20230528121523878](/images/image-20230528121523878.png)
 
 也可以通过`Name.__proto__`，通过这个属性可以访问对象的**原型**
 
@@ -351,7 +351,7 @@ conosle.log(person1.__proto__.constructor === Person); // true
 console.log(person1.__proto__ === person2.__proto__); // true
 ```
 
-![image-20230528144315910](C:\Users\31579\AppData\Roaming\Typora\typora-user-images\image-20230528144315910.png)	
+![image-20230528144315910](/images/image-20230528144315910.png)	
 
 逐级查找机制
 
@@ -681,7 +681,7 @@ var fuc = function three() {
 console.dir(fuc()())
 ```
 
-![image-20230527120111449](C:\Users\31579\AppData\Roaming\Typora\typora-user-images\image-20230527120111449.png)
+![image-20230527120111449](/images/image-20230527120111449.png)
 
 > A：你好，这是Bing。我可以帮你回答这个问题。😊
 >
