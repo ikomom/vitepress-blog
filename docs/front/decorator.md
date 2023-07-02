@@ -18,6 +18,12 @@
 > - "design:paramtypes"
 > - "design:returntype" 不能隐式推断，只能显式标注
 
+// TODO: 研究以下例子
+
+[全新 Javascript 装饰器实战上篇：用 MobX 的方式打开 Vue](https://juejin.cn/post/7248801590113763386)
+
+[全新 JavaScript 装饰器实战下篇：实现依赖注入](https://juejin.cn/post/7250356064989397053)
+
 ## 2. 如何启用
 
 以下两种方法都可以开启装饰器语法
@@ -61,7 +67,7 @@ function __decorate(decorators, target, key, descriptor) {
     r = Reflect.decorate(decorators, target, key, descriptor);
   }
   else {
-    // 循环调用函数
+    // 反向循环调用函数，先设置类型
     for (let i = decorators.length - 1; i >= 0; i--) {
       decoratorFunc = decorators[i]
       if (decoratorFunc) {
@@ -71,7 +77,7 @@ function __decorate(decorators, target, key, descriptor) {
           ? decoratorFunc(r) // class
           : length > 3
             ? decoratorFunc(target, key, r) // method
-            : decoratorFunc(target, key) // property
+            : decoratorFunc(target, key) // property, param
           ) || r;
       }
     }
@@ -82,12 +88,32 @@ function __decorate(decorators, target, key, descriptor) {
 
   return r;
 }
+var __metadata = (this && this.__metadata) || function (key, value) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") {
+        // 返回可运行的装饰器函数
+         return Reflect.metadata(key, value);
+    }
+};
+function __param(paramIndex, decorator) {
+    return function (target, key) { 
+        decorator(target, key, paramIndex); 
+    }
+};
+
+function ParamDecorator(target, propertyKey, index) {
+    console.log('PropertyDecorator', {
+        target: target,
+        propertyKey: propertyKey,
+        index: index,
+        type: Reflect.getMetadata('design:type', target, propertyKey).toString(),
+    });
+}
 var ExampleClass = (function () {
     function ExampleClass(a) {
         this.pattern1 = { xx: 1 };
         console.log('init', a);
     }
-    ExampleClass.prototype.runPatten = function () {
+   ExampleClass.prototype.runPatten = function (input) {
         console.log('log', this.pattern);
         return '111';
     };
@@ -105,8 +131,9 @@ var ExampleClass = (function () {
     ], ExampleClass.prototype, "pattern2", void 0);
     __decorate([
         PropertyDecorator,
+        __param(0, ParamDecorator),
         __metadata("design:type", Function),
-        __metadata("design:paramtypes", []),
+        __metadata("design:paramtypes", [String]),
         __metadata("design:returntype", String)
     ], ExampleClass.prototype, "runPatten", null);
       // 返回赋值给类
