@@ -34,6 +34,8 @@ export default defineConfig({
         text: '面试',
         collapsible: true,
         items: [
+          {text: '安全', link: '/front/面试/安全'},
+          {text: '低代码', link: '/front/面试/低代码'},
           {text: '设计模式', link: '/front/面试/设计模式'},
           {text: '杂项', link: '/front/面试/设计模式'},
           {text: 'CSS', link: '/front/面试/CSS'},
