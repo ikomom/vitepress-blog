@@ -37,7 +37,7 @@ export default defineConfig({
           {text: '安全', link: '/front/面试/安全'},
           {text: '低代码', link: '/front/面试/低代码'},
           {text: '设计模式', link: '/front/面试/设计模式'},
-          {text: '杂项', link: '/front/面试/设计模式'},
+          {text: '杂项', link: '/front/面试/杂项'},
           {text: 'CSS', link: '/front/面试/CSS'},
           {text: 'HTML', link: '/front/面试/HTML'},
           {text: 'HTTP', link: '/front/面试/HTTP'},
