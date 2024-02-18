@@ -8,7 +8,7 @@
 
 1. （简略的说下）使用**引用计数法**时，两个对象互相引用，就算运行完将两个变量都清空，引用计数器也不会清空，就会会造成内存泄漏；但是现在的**标记清除法**不会有这样的问题
    - **标记清除**回收策略的大致流程是这样的，最开始的时候**将所有的变量加上标记**，**cycularReference 函数的时候会将函数内部的变量这些标记清除*， 函数执行完后再加上标记**
-2. `JSON.stringfy()`转换会报错，因为其无法将一个无限循环转换的
+2. `JSON.stringfy()`转换会报错，因为其无法将一个无限循环转换的对象转为普通的string
 
 
 
@@ -916,6 +916,8 @@ for (let i of iter) {
 ### MicroTask（微任务）
 
  `Process.nextTick（Node独有）`、`Promise`、`Object.observe(废弃)`、`MutationObserver`（具体使用方式查看[这里](https://link.juejin.cn/?target=http%3A%2F%2Fjavascript.ruanyifeng.com%2Fdom%2Fmutationobserver.html)）
+
+[在 JavaScript 中通过 queueMicrotask() 使用微任务](https://developer.mozilla.org/zh-CN/docs/Web/API/HTML_DOM_API/Microtask_guide)
 
 
 

@@ -24,6 +24,8 @@
 
 [全新 JavaScript 装饰器实战下篇：实现依赖注入](https://juejin.cn/post/7250356064989397053)
 
+[TypeScript 5.0 beta 发布：新版 ES 装饰器、泛型参数的常量修饰、枚举增强等](https://zhuanlan.zhihu.com/p/602059905)
+
 ## 2. 如何启用
 
 以下两种方法都可以开启装饰器语法
