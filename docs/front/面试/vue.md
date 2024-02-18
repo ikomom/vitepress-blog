@@ -125,7 +125,9 @@ export const nextTick = (function () {
 2. 不是IE, 且支持MutationObserver的直接创建内存dom, 监听dom, 触发nextTickHandler
 3. 其他用setTimeout, 触发nextTickHandler
 
+### 响应式原理
 
+[vue3响应式原理](https://juejin.cn/post/7042493531813838878#heading-0)
 
 
 
