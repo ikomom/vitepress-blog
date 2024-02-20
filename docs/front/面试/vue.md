@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # vue
 
 ## 实际

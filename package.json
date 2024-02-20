@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "packageManager": "pnpm@7.5.0",
+  "type": "module",
   "scripts": {
     "gen:sidebar": "node script/sidebar.js",
     "dev": "pnpm run docs:dev",
@@ -17,7 +18,8 @@
   "devDependencies": {
     "glob": "^8.0.3",
     "prettier": "^2.7.1",
-    "vitepress": "1.0.0-beta.5",
-    "vue": "^3.2.37"
+    "vitepress": "1.0.0-rc.44",
+    "vue": "^3.2.37",
+    "markdown-it-mathjax3": "^4.3.2"
   }
 }

@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # Decorator 装饰器语法
 
 ## 1. 背景

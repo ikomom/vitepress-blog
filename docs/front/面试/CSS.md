@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 # CSS
 
 [learn css](https://web.dev/learn/css/)

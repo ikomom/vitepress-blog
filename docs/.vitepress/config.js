@@ -3,14 +3,24 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'ikomom blog',
   description: 'Just playing around.',
+  lastUpdated: true,
+  cleanUrls: true,
+  metaChunk: true,
+
+  markdown: {
+    math: true,
+  },
   themeConfig: {
+    search: {
+      provider: 'local'
+    },
     outlineTitle: '目录',
     sidebar: [
       {
         text: '算法与数据结构',
         collapsible: true,
         items: [
-          {text: '收集', link: '/algorithm/index'},
+          {text: '收集', link: '/algorithm/algorithm'},
           {text: '[TODO]树', link: '/algorithm/tree'},
         ]
       },
@@ -42,7 +52,7 @@ export default defineConfig({
           {text: 'HTML', link: '/front/面试/HTML'},
           {text: 'HTTP', link: '/front/面试/HTTP'},
           {text: 'JS', link: '/front/面试/JS'},
-          {text: 'VUE', link: '/front/面试/VUE'},
+          {text: 'VUE', link: '/front/面试/vue'},
         ]
       },
       {
@@ -51,6 +61,7 @@ export default defineConfig({
         items: [
           {text: '[TODO]react状态管理', link: '/front/state'},
           {text: '[TODO]状态机', link: '/front/stateMachine'},
+          {text: '[TODO]装饰器', link: '/front/decorator'},
         ]
       },
       {
@@ -107,13 +118,13 @@ export default defineConfig({
     socialLinks: [
       {icon: 'github', link: 'https://github.com/ikomom/vitepress-blog'},
     ],
-    // footer: {
-    //   message: 'Released under the MIT License.',
-    //   copyright: 'Copyright © 2019-present Evan You'
-    // },
+    footer: {
+      message: 'Released under the MIT License.',
+      copyright: 'Copyright © 2019-present Ikomom'
+    },
     docFooter: {
-      prev: 'Pagina prior',
-      next: 'Proxima pagina'
+      prev: '上一页',
+      next: '下一页'
     }
   },
 
